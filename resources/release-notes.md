@@ -1,9 +1,15 @@
 # Next
 
-* Properly include `libintl` such that for example `:languge` works.
-* Dependencies updates:
-  - sparkle-project/Sparkle@2.5.2
+* GH-1059: Improved coloring of custom tabs; thanks @s-daveb for the PR!
 
+# v0.46.1-20240426.143700
+
+* Properly include `libintl` such that for example `:languge` works.
+* Bugfix: Filetype detection issue
+* Dependencies updates:
+  - sparkle-project/Sparkle@2.6.0
+  - Quick/Nimble@13.3.0
+  - apple/swift-collections@1.1.0
 
 # v0.46.0-20240102.233758
 
