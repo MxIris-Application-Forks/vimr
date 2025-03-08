@@ -8,16 +8,28 @@ import MessagePack
 import RxSwift
 
 public extension NvimView {
+  private func isMeta(_ event: NSEvent) -> Bool {
+    let modifierFlags = event.modifierFlags
+
+    if (self.isLeftOptionMeta && modifierFlags.contains(.leftOption))
+        || (self.isRightOptionMeta && modifierFlags.contains(.rightOption)) {
+      return true
+    }
+
+    if modifierFlags.contains(.control) || modifierFlags.contains(.command) || event.specialKey != nil {
+      return true
+    }
+    return false
+  }
+
   override func keyDown(with event: NSEvent) {
     self.keyDownDone = false
 
     NSCursor.setHiddenUntilMouseMoves(true)
 
     let modifierFlags = event.modifierFlags
-    let isMeta = (self.isLeftOptionMeta && modifierFlags.contains(.leftOption))
-      || (self.isRightOptionMeta && modifierFlags.contains(.rightOption))
 
-    if !isMeta {
+    if !isMeta(event) {
       let cocoaHandledEvent = NSTextInputContext.current?.handleEvent(event) ?? false
       if self.hasMarkedText() {
         // mark state ignore Down,Up,Left,Right,=,- etc keys
@@ -35,7 +47,7 @@ public extension NvimView {
 
     let flags = self.vimModifierFlags(modifierFlags) ?? ""
     let isNamedKey = KeyUtils.isSpecial(key: charsIgnoringModifiers)
-    let isControlCode = KeyUtils.isControlCode(key: chars) && !isNamedKey
+    let isControlCode = KeyUtils.isControlCode(key: chars, modifiers: modifierFlags) && !isNamedKey
     let isPlain = flags.isEmpty && !isNamedKey
     let isWrapNeeded = !isControlCode && !isPlain
 
@@ -43,7 +55,7 @@ public extension NvimView {
     let finalInput = isWrapNeeded ? self.wrapNamedKeys(flags + namedChars)
       : self.vimPlainString(chars)
 
-    _ = self.api.input(keys: finalInput, errWhenBlocked: false).syncValue()
+    _ = self.api.nvimInput(keys: finalInput, errWhenBlocked: false).syncValue()
 
     self.keyDownDone = true
   }
@@ -60,7 +72,7 @@ public extension NvimView {
 
     // try? self.api.feedkeys(keys: self.vimPlainString(text), mode:"m", escape_ks: false)
     //  .wait()
-    _ = self.api.input(keys: self.vimPlainString(text), errWhenBlocked: false).syncValue()
+    _ = self.api.nvimInput(keys: self.vimPlainString(text), errWhenBlocked: false).syncValue()
 
     if self.hasMarkedText() { self._unmarkText() }
     self.keyDownDone = true
@@ -125,7 +137,7 @@ public extension NvimView {
     // So we escape as early as possible
     if chars == "\0" {
       self.api
-        .input(keys: self.wrapNamedKeys("Nul"), errWhenBlocked: false)
+        .nvimInput(keys: self.wrapNamedKeys("Nul"), errWhenBlocked: false)
         .subscribe(onFailure: { [weak self] error in
           self?.log.error("Error in \(#function): \(error)")
         })
@@ -138,7 +150,7 @@ public extension NvimView {
     // Also mentioned in MacVim's KeyBindings.plist
     if flags == .control, chars == "6" {
       self.api
-        .input(keys: "\u{1e}", errWhenBlocked: false) // AKA ^^
+        .nvimInput(keys: "\u{1e}", errWhenBlocked: false) // AKA ^^
         .subscribe(onFailure: { [weak self] error in
           self?.log.error("Error in \(#function): \(error)")
         })
@@ -149,7 +161,7 @@ public extension NvimView {
     if flags == .control, chars == "2" {
       // <C-2> should generate \0, escaping as above
       self.api
-        .input(keys: self.wrapNamedKeys("Nul"), errWhenBlocked: false)
+        .nvimInput(keys: self.wrapNamedKeys("Nul"), errWhenBlocked: false)
         .subscribe(onFailure: { [weak self] error in
           self?.log.error("Error in \(#function): \(error)")
         })
@@ -183,7 +195,7 @@ public extension NvimView {
     }
     if replacementRange.length > 0 {
       let text = String(repeating: "<BS>", count: replacementRange.length)
-      try? self.api.feedkeys(keys: text, mode: "i", escape_ks: false)
+      try? self.api.nvimFeedkeys(keys: text, mode: "i", escape_ks: false)
         .wait()
     }
 

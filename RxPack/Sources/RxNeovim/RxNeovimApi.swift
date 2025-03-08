@@ -27,11 +27,6 @@ public final class RxNeovimApi {
 
   public typealias Value = RxMsgpackRpc.Value
 
-  public var streamResponses: Bool {
-    get { self.msgpackRpc.streamResponses }
-    set { self.msgpackRpc.streamResponses = newValue }
-  }
-
   public var msgpackRawStream: Observable<RxMsgpackRpc.Message> { self.msgpackRpc.stream }
 
   public func run(inPipe: Pipe, outPipe: Pipe, errorPipe: Pipe) -> Completable {
@@ -42,7 +37,7 @@ public final class RxNeovimApi {
 
   public func checkBlocked<T>(_ single: Single<T>) -> Single<T> {
     self
-      .getMode()
+      .nvimGetMode()
       .flatMap { dict -> Single<T> in
         guard (dict["blocking"]?.boolValue ?? false) == false else {
           throw RxNeovimApi.Error.blocked
@@ -51,7 +46,6 @@ public final class RxNeovimApi {
         return single
       }
   }
-
 
   public func sendRequest(
     method: String,

@@ -1,5 +1,74 @@
 # Next
 
+* Dependencies updates:
+  - ReactiveX/RxSwift@6.9.0
+  - sparkle-project/Sparkle@2.7.0
+
+# 0.51.1-20250215.143933 
+
+* GH-1095: Fix: option as meta when control and command are pressed; Thanks @gaelph for the PR!
+
+# 0.51.0-20250129.234141
+
+* Neovim 0.10.4 😀
+
+# 0.50.0-20241224.155723
+
+* Neovim 0.10.3 😀
+* Dependencies updates:
+  - qvacua/MessagePack.swift@4.1.0
+  - ReactiveX/RxSwift@6.8.0
+
+# 0.49.0-20241006.202133
+
+* Neovim 0.10.2 😀
+
+# 0.48.1-20240928.193147
+
+* Bugfix: `lcd/cwd` fix.
+* Dependencies updates:
+  - sparkle-project/Sparkle@2.7.4
+  - Quick/Nimble@13.4.0
+  - apple/swift-collections@1.1.2
+
+# 0.48.0-20240727.082947
+
+* Neovim 0.10.1 😀
+
+# 0.47.5-20240630.155444
+
+* GH-1078: Fix lcd/tcd. Thanks @shanesmith for the PR!
+
+# 0.47.4-20240626.190016
+
+* GH-1075: Fix "E1502: Lua failed to grow stack to 4001". Thanks @shanesmith for the PR!
+* Dependencies updates:
+  - sparkle-project/Sparkle@2.7.3
+  - apple/swift-collections@1.1.1
+
+# v0.47.3-20240616.090032
+
+* GH-1072: Match the tab colors 1:1 with Neovim's `colorscheme`; thanks @s-daveb for the PR!
+* GH-1073: Scroll the window content instead of moving the cursor; thanks @shanesmith for the PR!
+
+# v0.47.2-20240531.221846
+
+* Always use live resizing
+* Dependencies updates:
+  - sparkle-project/Sparkle@2.7.2
+  - ReactiveX/RxSwift@6.7.1
+
+# v0.47.1-20240528.171603
+
+* Neovim 0.10.0 😀
+  - 0.47.0 did not contain the generated API methods for Neovim 0.10.0...
+
+# v0.47.0-20240528.165939
+
+* Neovim 0.10.0 😀
+
+# v0.46.2-20240517.102525
+
 * GH-1059: Improved coloring of custom tabs; thanks @s-daveb for the PR!
 
 # v0.46.1-20240426.143700
